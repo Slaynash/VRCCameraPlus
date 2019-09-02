@@ -11,7 +11,7 @@ using VRCTools.utils;
 
 namespace CameraPlus
 {
-    [VRCModInfo("CameraPlus", "1.0.1", "Slaynash")]
+    [VRCModInfo("CameraPlus", "1.0.2", "Slaynash")]
     public class CameraPlus : VRCMod
     {
 
@@ -22,6 +22,12 @@ namespace CameraPlus
             ModManager.StartCoroutine(InitEnhancedCamera());
         }
 
+        private void CleanComponents(GameObject node)
+        {
+            GameObject.DestroyImmediate(node.GetComponent<VRC_Trigger>(), true);
+            GameObject.DestroyImmediate(node.GetComponent<VRC_EventHandler>(), true);
+        }
+
         private IEnumerator InitEnhancedCamera()
         {
             yield return VRCUiManagerUtils.WaitForUiManagerInit();
@@ -30,11 +36,10 @@ namespace CameraPlus
             VRCModLogger.Log("[CameraPlus] UserCameraController instance: " + userCameraController);
             cameraHelper = userCameraController.photoCamera.transform.Find("camera_lens_mesh")?.gameObject;
 
-
-
             //Zoom In
             GameObject zoomInButton = GameObject.Instantiate(userCameraController.viewFinder.transform.Find("PhotoControls/Right_Filters").gameObject, userCameraController.viewFinder.transform);
-            GameObject.Destroy(zoomInButton.GetComponent<VRC_Trigger>());
+            CleanComponents(zoomInButton);
+
             VRCT_Trigger zoomInTrigger = VRCT_Trigger.CreateVRCT_Trigger(zoomInButton, () => {
                 Camera cam1 = userCameraController.photoCamera.GetComponent<Camera>();
                 if (cam1.fieldOfView - 10 > 0) cam1.fieldOfView -= 10;
@@ -45,10 +50,10 @@ namespace CameraPlus
             zoomInTrigger.interactText = "Zoom in";
             zoomInButton.transform.localPosition = zoomInButton.transform.localPosition + new Vector3(-0.05f, 0, 0);
             SetButtonTexture(zoomInButton, ImageDatas.zoomin);
-
+            
             //Zoom Out
             GameObject zoomOutButton = GameObject.Instantiate(userCameraController.viewFinder.transform.Find("PhotoControls/Right_Extender").gameObject, userCameraController.viewFinder.transform);
-            GameObject.Destroy(zoomOutButton.GetComponent<VRC_Trigger>());
+            CleanComponents(zoomOutButton);
             VRCT_Trigger zoomOutTrigger = VRCT_Trigger.CreateVRCT_Trigger(zoomOutButton, () => {
                 Camera cam1 = userCameraController.photoCamera.GetComponent<Camera>();
                 if (cam1.fieldOfView + 10 < 180) cam1.fieldOfView += 10;
@@ -62,7 +67,7 @@ namespace CameraPlus
 
             //Toggle camera helper
             GameObject toggleCameraHelperButton = GameObject.Instantiate(userCameraController.viewFinder.transform.Find("PhotoControls/Right_Timer").gameObject, userCameraController.viewFinder.transform);
-            GameObject.Destroy(toggleCameraHelperButton.GetComponent<VRC_Trigger>());
+            CleanComponents(toggleCameraHelperButton);
             VRCT_Trigger toggleCameraHelperTrigger = VRCT_Trigger.CreateVRCT_Trigger(toggleCameraHelperButton, () => {
                 cameraHelper?.SetActive(!cameraHelper.activeSelf);
                 userCameraController.speaker.PlayOneShot(userCameraController.buttonSound);
