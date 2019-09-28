@@ -4,7 +4,7 @@ using VRCSDK2;
 
 namespace CameraPlus
 {
-    class VRCT_Trigger : VRC_Interactable
+    class VRCT_Trigger : VRC_UseEvents
     {
         private Action onInteract;
 
