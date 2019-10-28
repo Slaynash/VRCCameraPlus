@@ -6,7 +6,7 @@ using VRCTools;
 
 namespace CameraPlus
 {
-    [VRCModInfo("CameraPlus", "2.0", "Slaynash and Herp Derpinstine")]
+    [VRCModInfo("CameraPlus", "2.0.0", "Slaynash, Herp Derpinstine")]
     public class CameraPlus : VRCMod
     {
         public void OnApplicationStart() { ModManager.StartCoroutine(InitEnhancedCamera()); }
